@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>OPSC Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f0e6;--sf:rgba(255,255,255,.8);--sf2:#fff;--tx:#1b1733;--mu:#6b6684;--ac:#9a6a0c;--ac2:#0d7d6c;--ln:rgba(40,30,80,.12);--on:#2a1c00;--g1:rgba(214,160,50,.24);--g2:rgba(13,125,108,.14);--gold:linear-gradient(135deg,#f0cf78,#c9922a);--sh:0 10px 30px rgba(40,30,80,.10);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070b17;--sf:rgba(22,29,52,.72);--sf2:#121a30;--tx:#f3efe6;--mu:#9aa3c0;--ac:#e9c46a;--ac2:#4fd1b5;--ln:rgba(255,255,255,.09);--on:#1a1203;--g1:rgba(233,196,106,.16);--g2:rgba(79,209,181,.12);--gold:linear-gradient(135deg,#f6dd9b,#d9a73a);--sh:0 14px 40px rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--bg:#070b17;--sf:rgba(22,29,52,.72);--sf2:#121a30;--tx:#f3efe6;--mu:#9aa3c0;--ac:#e9c46a;--ac2:#4fd1b5;--ln:rgba(255,255,255,.09);--on:#1a1203;--g1:rgba(233,196,106,.16);--g2:rgba(79,209,181,.12);--gold:linear-gradient(135deg,#f6dd9b,#d9a73a);--sh:0 14px 40px rgba(0,0,0,.45)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font:15.5px/1.5 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(900px 480px at 90% -8%,var(--g1),transparent 60%),radial-gradient(700px 480px at -10% 8%,var(--g2),transparent 55%),var(--bg);background-attachment:fixed}
+main{max-width:640px;margin:0 auto;padding:18px 16px 120px}
+h1,.time,.stat b,.ring b,#ov .t{font-family:Fraunces,Georgia,'Times New Roman',serif}
+h1{font-size:2rem;font-weight:700;margin:2px 0 4px;letter-spacing:-.02em;line-height:1.1}
+.eyebrow{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);font-weight:700}
+.sub{color:var(--mu);font-size:.86rem}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:6px 2px 4px}
+.ring{--p:0;width:108px;height:108px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--ac) calc(var(--p)*1%),var(--ln) 0);box-shadow:0 0 36px var(--g1)}
+.ring>div{width:86px;height:86px;border-radius:50%;background:var(--sf2);display:grid;place-content:center;text-align:center}
+.ring b{font-size:1.6rem;color:var(--ac);line-height:1}
+.ring span{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mu)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 6px}
+.stat,.card,details{background:var(--sf);border:1px solid var(--ln);border-radius:20px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.stat{padding:12px 14px}
+.stat b{display:block;font-size:1.55rem;line-height:1.1;color:var(--ac)}
+.card{padding:16px;margin:12px 0}
+.bar{height:7px;background:var(--ln);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--ac2),var(--ac));box-shadow:0 0 12px var(--g1);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:616px;margin:0 auto;display:flex;padding:6px;border-radius:26px;background:var(--sf);border:1px solid var(--ln);box-shadow:var(--sh);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);z-index:5}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px;border:0;border-radius:20px;background:none;color:var(--mu);font:700 .64rem/1 Manrope,system-ui,sans-serif;transition:.2s}
+nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--ac);background:var(--g1)}
+h2{font:700 .7rem/1 Manrope,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);margin:26px 4px 2px}
+details{margin:10px 0;overflow:hidden}
+summary{padding:14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:8px 10px;list-style:none;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary b{font-weight:700;font-size:.97rem}
+details[open] summary b{color:var(--ac)}
+summary .sub{font-weight:700;font-variant-numeric:tabular-nums}
+summary .bar{grid-column:1/3}
+.row{display:grid;grid-template-columns:1fr auto auto auto auto;gap:6px;align-items:center;padding:10px 14px;border-top:1px solid var(--ln)}
+.row span{overflow-wrap:anywhere}
+.chip{min-width:40px;padding:7px 0;border-radius:999px;border:1px solid var(--ln);background:none;color:var(--mu);font:700 .72rem Manrope,system-ui,sans-serif;transition:.15s}
+.chip.on{background:var(--gold);border-color:transparent;color:var(--on);box-shadow:0 4px 14px var(--g1)}
+.x{background:none;border:0;color:var(--mu);font-size:1.2rem;padding:4px 6px}
+.add{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--ln)}
+input,select{flex:1;min-width:0;padding:11px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);font:inherit}
+.btn{padding:11px 16px;border-radius:14px;border:0;background:var(--gold);color:var(--on);font:700 .9rem Manrope,system-ui,sans-serif;box-shadow:0 6px 18px var(--g1)}
+.btn.g{background:var(--sf2);border:1px solid var(--ln);color:var(--tx);box-shadow:none}
+.rowf{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.time{font-size:4.4rem;font-weight:700;text-align:center;letter-spacing:-.02em;margin:8px 0;font-variant-numeric:tabular-nums;background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.days{display:flex;gap:7px;align-items:flex-end;height:120px;margin-top:10px}
+.days div{flex:1;text-align:center;font-size:.7rem;color:var(--mu)}
+.days i{display:block;background:linear-gradient(180deg,var(--ac),var(--ac2));border-radius:8px 8px 3px 3px;min-height:4px}
+.ph{border-left:3px solid var(--ln);padding:8px 12px;margin:10px 0;border-radius:0 12px 12px 0}
+.ph.cur{border-color:var(--ac);background:var(--g1)}
+.ph b{display:block}
+ol{padding-left:20px}li{margin:8px 0}
+.hide{display:none}
+#ov{position:fixed;inset:0;background:radial-gradient(600px 420px at 50% 40%,#2b210a,#000 72%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:9;text-align:center;padding:24px}
+#ov .t{font-size:5.2rem;font-weight:700;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,#f6dd9b,#d9a73a);-webkit-background-clip:text;background-clip:text;color:transparent}
+#ov.hide{display:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}.brand{display:flex;gap:12px;align-items:center}.logo{width:54px;height:54px;flex:none;border-radius:15px;box-shadow:0 6px 22px var(--g1)}
+</style></head><body><main>
+<header class="hero"><div><div class="brand"><svg class="logo" viewBox="0 0 108 108" aria-hidden="true"><rect width="108" height="108" rx="26" fill="#0b1226"/><circle cx="54" cy="54" r="27" fill="none" stroke="#e9c46a" stroke-opacity=".28" stroke-width="7"/><circle cx="54" cy="54" r="27" fill="none" stroke="#e9c46a" stroke-width="7" stroke-linecap="round" stroke-dasharray="127 170" transform="rotate(-90 54 54)"/><path d="M41 55l9 9 17-20" fill="none" stroke="#e9c46a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg><div><div class="eyebrow">Odisha Civil Services</div><h1>OPSC Tracker</h1></div></div><div class="sub" id="cd" style="margin-top:8px"></div></div><div class="ring" id="ring"><div><b id="pct">0%</b><span>syllabus</span></div></div></header>
+<div class="bar" style="display:none"><i id="tot"></i></div>
+<div class="stats"><div class="stat"><b id="st">0</b><span class="sub">day streak</span></div><div class="stat"><b id="td">0h</b><span class="sub">today</span></div><div class="stat"><b id="wk">0h</b><span class="sub">last 7 days</span></div></div>
+
+<section id="p-syl"></section>
+
+<section id="p-plan" class="hide"></section>
+<section id="p-foc" class="hide">
+<div class="card"><div class="rowf"><select id="fsub" aria-label="Subject"></select></div>
+<div class="time" id="clock">25:00</div>
+<div class="rowf"><button class="btn g" data-m="25">25 min</button><button class="btn g" data-m="50">50 min</button><button class="btn g" data-m="90">90 min</button></div>
+<div class="rowf"><button class="btn" id="go">Start focus</button><button class="btn g" id="stop">Stop and save</button></div>
+<label class="sub" style="display:block;margin:8px 0"><input type="checkbox" id="mini" checked style="flex:none;width:auto"> Minimal screen: black screen with only the timer</label><div class="sub" id="note">Switching to another app or tab during a session counts as a distraction. Keep your phone on Do Not Disturb.</div></div>
+<div class="card"><b>Add time manually</b><div class="rowf"><input id="mm" type="number" min="1" placeholder="Minutes" inputmode="numeric"><button class="btn" id="addm">Add</button></div></div>
+</section>
+
+<section id="p-sta" class="hide">
+<div class="card"><b>Last 7 days (minutes)</b><div class="days" id="days"></div></div>
+<div class="card"><b>Time by subject (all time)</b><div id="bysub"></div></div>
+<div class="card"><b>Exam date</b><div class="rowf"><input id="ed" type="date"><button class="btn" id="sed">Save</button></div></div>
+<div class="card"><button class="btn g" id="reset">Reset syllabus to default</button></div>
+</section>
+<section id="p-pho" class="hide"><div class="card"><b>Automatic minimalist phone</b><p class="sub">A web app can’t change your phone’s settings. Android can switch to a minimal mode on a schedule by itself, so set it once and it runs every study session:</p><ol class="sub"><li>Open Settings, then Digital Wellbeing, then Focus mode. Pick the apps that distract you and add a schedule for your study hours.</li><li>In the same place, turn on Bedtime mode with grayscale and Do Not Disturb on a schedule for the evening.</li><li>Set daily app timers for Instagram, YouTube and games.</li><li>Keep only this tracker, Phone and a notes app on your home screen. Move everything else to a folder on the last page.</li></ol><p class="sub">Menu names differ by phone brand. If you can’t find a setting, search for “Focus” in Settings.</p></div></section>
+</main>
+<div id="ov" class="hide"><small id="osub"></small><div class="t" id="oclock">25:00</div><small>Stay on this screen. Leaving it counts as a distraction.</small><button class="btn g" id="ostop" style="color:#fff;border-color:#666">Stop and save</button></div>
+<nav><button data-t="syl" class="on"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></svg>Syllabus</button><button data-t="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Plan</button><button data-t="foc"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Focus</button><button data-t="sta"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button><button data-t="pho"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg>Phone</button></nav>
+<script>
+var KEY='opsc-tracker-v2';
+var DEFSTR=`#Prelims
+GS-I: Current Events|National events;International events;Government schemes and Odisha updates;Awards, summits, reports and indices
+GS-I: History of India and National Movement|Ancient India;Medieval India;Modern India from mid-18th century;Freedom struggle and its stages;Post-independence consolidation
+GS-I: History of Odisha and Odia Nationalism|Kalinga, Kharavela and the Kalinga War;Bhauma-Karas, Somavamsis, Gangas, Gajapatis;Paik Rebellion, Surendra Sai, 1857;Creation of Odisha Province and Odia nationalism;Praja Mandal movements and princely states
+GS-I: Geography (India, Odisha, World)|Revolution, rotation, seasons, latitudes, tropics;Landforms, oceans, atmosphere (World);Physical geography of India;Climate, monsoon, rivers of India;Odisha physiography and rivers;Odisha resources: minerals, forests;Social and economic geography, population
+GS-I: Polity and Governance|Constitution: features and amendments;Fundamental rights, DPSP, duties;Union and state executive and legislature;Judiciary and constitutional bodies;Panchayati Raj;Public policy and rights issues
+GS-I: Economic and Social Development|Sustainable development and SDGs;Poverty and inclusion;Demographics;Social sector initiatives (health, education, welfare)
+GS-I: Environment and Climate|Ecology and ecosystems;Biodiversity and conservation;Climate change and agreements;Pollution and environmental laws
+GS-I: General Science|Physics basics;Chemistry basics;Biology and human health;Everyday science
+GS-II (CSAT, qualifying 33%)|Comprehension;Interpersonal and communication skills;Logical reasoning and analytical ability;Decision making and problem solving;General mental ability;Basic numeracy (Class X);Data interpretation (Class X)
+#Mains: qualifying papers
+Odia Language (250, qualifying 25%)|Comprehension of passages;Précis writing;Usage and vocabulary;Short essays;Translation English to Odia and back
+English Language (250, qualifying 25%)|Comprehension of passages;Précis writing;Usage and vocabulary;Short essays
+#Mains: merit papers
+Essay (250)|Essay structure and introductions;Odisha and social themes;Economy, environment and technology themes;Philosophical and ethical themes;Timed essay practice (at least 10)
+GS-I Paper: Heritage and Culture|Indian art forms, literature, architecture;Temple architecture of Odisha;Socio-cultural development in Odisha;Bhakti movement in Odisha;Odia language and literature;Festivals and regional traditions of Odisha
+GS-I Paper: History|Modern Indian history and freedom struggle;Post-independence reorganisation;Kalinga War and dynastic history of Odisha;Early resistance: Paik Rebellion, Surendra Sai, 1857;Creation of Odisha Province;Praja Mandal, princely states, social reform
+GS-I Paper: Geography and Society|Physical, economic, social geography of India;Earthquakes, tsunami, volcanoes, cyclones;Odisha resources: water, forests, minerals;Odisha physiography and rivers;Indian society and diversity;Women, population, poverty, urbanisation;Globalisation and society;Tribes and urban centres of Odisha;Communalism, regionalism, secularism
+GS-II Paper: Constitution, Polity, Governance|Constitution: evolution, features, basic structure;Union and states, federalism, devolution;Separation of powers, dispute redressal;Comparison with other countries;Parliament and state legislatures;Executive, judiciary, pressure groups;RPA, Odisha Right to Public Services Act, Lokayukta Act;Constitutional, statutory, quasi-judicial bodies;Transparency, e-governance, citizen charters;Civil services in a democracy;PRIs in Odisha;Odisha and its neighbours
+GS-II Paper: Social Justice|Government policies and interventions;MSMEs and women SHGs;Welfare schemes for vulnerable sections;Health, education, human resources;Poverty, hunger and SDGs
+GS-III Paper: Science and Technology|S&T in everyday life;Achievements of Indians, indigenisation;IT, space, robotics, nano, biotech, IPR
+GS-III Paper: Economy and Agriculture|Planning, resources, growth, employment;Inclusive growth;Budgeting: India and Odisha;Land reforms;Liberalisation and industrial policy;Infrastructure: energy, roads, rail, air;Industrialisation in Odisha;Cropping patterns, irrigation, marketing;Subsidies, MSP, PDS, food security;Food processing, animal rearing, farmers’ income
+GS-III Paper: Environment, Security, Disaster|Conservation, pollution, EIA;Disaster management and Odisha institutions;Development and extremism, LWE in Odisha;Cyber security, money laundering;Border security, organised crime, terrorism;Security forces and agencies
+GS-IV Paper: Ethics, Integrity, Aptitude|Ethics and human interface;Attitude;Aptitude and foundational values;Emotional intelligence;Moral thinkers of India and the world;Ethics in public administration;Probity in governance;Case studies (practise 20)
+#Optional: Philosophy
+Philosophy Paper I: Western Philosophy|Plato and Aristotle;Rationalism: Descartes, Spinoza, Leibniz;Empiricism: Locke, Berkeley, Hume;Kant;Hegel;Moore, Russell, early Wittgenstein;Logical Positivism;Later Wittgenstein;Phenomenology (Husserl);Existentialism: Kierkegaard, Sartre, Heidegger;Quine and Strawson
+Philosophy Paper I: Indian Philosophy|Carvaka;Jainism;Schools of Buddhism;Nyaya-Vaisesika;Samkhya;Yoga;Mimamsa;Schools of Vedanta;Aurobindo
+Philosophy Paper II: Socio-Political Philosophy|Equality, justice, liberty;Sovereignty: Austin, Bodin, Laski, Kautilya;Individual and state: rights, duties;Forms of government;Political ideologies: anarchism, Marxism, socialism;Humanism, secularism, multiculturalism;Crime and punishment;Development and social progress;Gender discrimination;Caste discrimination: Gandhi and Ambedkar
+Philosophy Paper II: Philosophy of Religion|Notions of God;Proofs for God’s existence and critique;Problem of evil;Soul, immortality, rebirth;Reason, revelation, faith;Religious experience;Religion without God;Religion and morality;Religious pluralism;Religious language
+#Interview (250)
+Personality Test|Current affairs: state, national, international;Own profile and Odisha knowledge;Mock interviews`;
+var S;function uid(){return Math.random().toString(36).slice(2,9)}
+function fresh(){var g='';return DEFSTR.split('\n').filter(Boolean).map(function(l){if(l[0]==='#'){g=l.slice(1);return null}var p=l.split('|');return{id:uid(),g:g,name:p[0],topics:p[1].split(';').map(function(t){return{id:uid(),name:t.trim(),r:0,v:0,m:0}})}}).filter(Boolean)}
+function load(){try{var r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);return}}catch(e){}S={subs:fresh(),log:[],exam:''};try{var o=localStorage.getItem('opsc-tracker-v1');if(o){o=JSON.parse(o);S.log=o.log||[];S.exam=o.exam||''}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+function dk(d){d=d||new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function $(i){return document.getElementById(i)}
+function pc(t){return(t.r+t.v+t.m)/3}
+function subPct(s){return s.topics.length?s.topics.reduce(function(a,t){return a+pc(t)},0)/s.topics.length*100:0}
+function mins(d){return S.log.filter(function(l){return l.d===d}).reduce(function(a,l){return a+l.m},0)}
+function hrs(m){return m>=60?(Math.round(m/6)/10)+'h':m+'m'}
+var openIds={};
+function renderSyl(){
+ var h='',lg='';S.subs.forEach(function(s){var p=Math.round(subPct(s));if(s.g&&s.g!==lg){h+='<h2>'+esc(s.g)+'</h2>';lg=s.g}
+ h+='<details data-s="'+s.id+'"'+(openIds[s.id]?' open':'')+'><summary><b>'+esc(s.name)+'</b><span class="sub">'+p+'%</span><div class="bar"><i style="width:'+p+'%"></i></div></summary>';
+ s.topics.forEach(function(t){h+='<div class="row"><span>'+esc(t.name)+'</span>'+
+ ['r','v','m'].map(function(k){return'<button class="chip'+(t[k]?' on':'')+'" data-k="'+k+'" data-s="'+s.id+'" data-t="'+t.id+'" aria-pressed="'+!!t[k]+'">'+{r:'Read',v:'Rev',m:'MCQ'}[k]+'</button>'}).join('')+
+ '<button class="x" data-del="'+t.id+'" data-s="'+s.id+'" aria-label="Delete topic">×</button></div>'});
+ h+='<div class="add"><input placeholder="Add a topic" data-in="'+s.id+'"><button class="btn" data-addt="'+s.id+'">Add</button><button class="btn g" data-dels="'+s.id+'" aria-label="Delete subject">Delete</button></div></details>'});
+ h+='<div class="card"><div class="add" style="border:0;padding:0"><input id="ns" placeholder="Add a subject, for example your optional"><button class="btn" id="nsb">Add</button></div></div>';
+ $('p-syl').innerHTML=h;
+ var all=S.subs.reduce(function(a,s){return a.concat(s.topics)},[]);
+ var p=all.length?Math.round(all.reduce(function(a,t){return a+pc(t)},0)/all.length*100):0;
+ $('pct').textContent=p+'%';$('tot').style.width=p+'%';$('ring').style.setProperty('--p',p)}
+function streak(){var n=0,d=new Date();if(!mins(dk(d)))d.setDate(d.getDate()-1);while(mins(dk(d))>0){n++;d.setDate(d.getDate()-1)}return n}
+function renderStats(){
+ $('st').textContent=streak();$('td').textContent=hrs(mins(dk()));
+ var w=0,h='',mx=1,a=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var m=mins(dk(d));a.push([d,m]);w+=m;mx=Math.max(mx,m)}
+ a.forEach(function(x){h+='<div><i style="height:'+Math.round(x[1]/mx*80)+'px"></i>'+x[1]+'<br>'+'SunMonTueWedThuFriSat'.substr(x[0].getDay()*3,3)+'</div>'});
+ $('days').innerHTML=h;$('wk').textContent=hrs(w);
+ var by={};S.log.forEach(function(l){by[l.s]=(by[l.s]||0)+l.m});
+ var k=Object.keys(by);$('bysub').innerHTML=k.length?k.map(function(n){return'<div class="rowf" style="justify-content:space-between;margin:4px 0"><span>'+esc(n)+'</span><b>'+hrs(by[n])+'</b></div>'}).join(''):'<div class="sub">No study time logged yet. Start a focus session.</div>';
+ if(S.exam){var dd=Math.ceil((new Date(S.exam+'T00:00:00')-new Date())/864e5);$('cd').textContent=dd>0?dd+' days to your exam':'Exam date has passed';$('ed').value=S.exam}else $('cd').textContent='Set your exam date in Progress';
+ var f=$('fsub'),cur=f.value;f.innerHTML=S.subs.map(function(s){return'<option>'+esc(s.name)+'</option>'}).join('');if(cur)f.value=cur}
+var PH=[['Foundation','2026-11-01','Nov 2026 to Apr 2027','Finish a first reading of the core GS subjects. Philosophy gets one day a week.',['REVISE','Polity','History of India','Geography (India','Economic and Social','Philosophy Paper I: Western','Current Events']],
+['Optional and Mains base','2027-05-01','May to Oct 2027','Philosophy Papers I and II first reading, three days a week. One timed answer every Saturday.',['REVISE','Philosophy Paper I: Western','Philosophy Paper I: Indian','GS-II Paper','Philosophy Paper II: Socio','Philosophy of Religion','ANSWER']],
+['Odisha special and revision','2027-11-01','Nov 2027 to Feb 2028','Odisha heritage, history, laws and economy for Mains. First full revision. CSAT every week. Watch for the notification.',['REVISE','GS-I Paper','GS-II Paper','GS-III Paper','CSAT','GS-IV Paper','Current Events']],
+['Prelims sprint','2028-03-01','Mar to May 2028','MCQs and previous papers on every subject. Push CSAT above 33%. Revise your notes.',['REVISE','Polity','History of India','Geography (India','CSAT','Economic and Social','Current Events']],
+['Mains push','2028-06-01','Jun to Oct 2028','After prelims: Mains answer writing, essays, Odia and English papers, optional revision.',['REVISE','ANSWER','Essay','GS-I Paper','Odia Language','English Language','GS-III Paper']]];
+function renderPlan(){
+ var t=dk(),i=0;PH.forEach(function(p,k){if(t>=p[1])i=k});
+ var p=PH[i],d=new Date(),dn='SunMonTueWedThuFriSat',m=Math.max(1,Math.min(24,(d.getFullYear()-2026)*12+d.getMonth()-9)),key=p[4][d.getDay()],sb=null,tx='';
+ if(key==='REVISE')tx='Revision day. Recall last week’s topics from memory, fix the gaps, then do 20 MCQs or one section of a previous-year paper.';
+ else if(key==='ANSWER')tx='Answer-writing day. Write one timed answer (150 words, 10 minutes) on a topic you finished this week.';
+ else{sb=S.subs.filter(function(s){return s.name.indexOf(key)>-1&&s.topics.some(function(x){return pc(x)<1})})[0];
+  if(sb){var tp=sb.topics.filter(function(x){return pc(x)<1})[0];tx='<b>'+esc(sb.name)+'</b><br>Next topic: '+esc(tp.name)+' ('+(!tp.r?'Read':!tp.v?'Revise':'MCQ practice')+')'}
+  else tx='Everything in this subject is marked done. Revise it, or add topics in the Syllabus tab.'}
+ var wk=0;for(var j=0;j<7;j++){var x=new Date();x.setDate(x.getDate()-j);wk+=mins(dk(x))}
+ var h='<div class="card"><b>Today’s hour</b><p>'+tx+'</p><div class="sub">Night plan: 25 min new learning while you are fresh, 20 min notes and recall, 15 min MCQs or one answer. Slept under 6 hours or too tired? Do the 20-minute version and keep your streak.</div><div class="rowf"><button class="btn" id="qs">Start 60-minute focus</button><button class="btn g" id="qs2">20-minute version</button></div></div>';
+ h+='<div class="card"><b>Phase '+(i+1)+' of 5: '+esc(p[0])+'</b><div class="sub">'+p[2]+', month '+m+' of 24</div><p>'+p[3]+'</p><div class="sub">Last 7 days: '+hrs(wk)+' of a 7h target</div><div class="bar"><i style="width:'+Math.min(100,Math.round(wk/4.2))+'%"></i></div></div>';
+ h+='<div class="card"><b>Your week in this phase</b>';
+ for(var k=1;k<=7;k++){var n=k%7,v=p[4][n],lb=v==='REVISE'?'Revision and MCQs':v==='ANSWER'?'Answer writing':v.replace(' (India','');h+='<div class="rowf" style="justify-content:space-between;margin:6px 0"><span>'+dn.substr(n*3,3)+'</span><span class="sub">'+esc(lb)+'</span></div>'}
+ h+='</div><div class="card"><b>2-year roadmap</b>';
+ PH.forEach(function(q,k){h+='<div class="ph'+(k===i?' cur':'')+'"><b>'+q[0]+'</b><span class="sub">'+q[2]+'</span><div>'+q[3]+'</div></div>'});
+ h+='<p class="sub">Dates are my estimate from the last cycle, when prelims was in June 2026. Confirm them in the next OPSC notification and shift the phases.</p></div>';
+ $('p-plan').innerHTML=h;
+ var go=function(sec){return function(){if(sb)$('fsub').value=sb.name;left=sec;clock();document.querySelector('nav [data-t="foc"]').click()}};$('qs').onclick=go(3600);$('qs2').onclick=go(1200)}
+function all(){renderSyl();renderStats();renderPlan()}
+$('p-syl').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ var d=e.target.closest('details');if(d)d.addEventListener('toggle',function(){openIds[d.dataset.s]=d.open},{once:true});
+ var s=S.subs.filter(function(x){return x.id===b.dataset.s})[0];
+ if(b.dataset.k){var t=s.topics.filter(function(x){return x.id===b.dataset.t})[0];t[b.dataset.k]=t[b.dataset.k]?0:1;openIds[s.id]=1}
+ else if(b.dataset.del){s.topics=s.topics.filter(function(x){return x.id!==b.dataset.del});openIds[s.id]=1}
+ else if(b.dataset.addt){var i=document.querySelector('[data-in="'+s.id+'"]');if(!i.value.trim())return;s.topics.push({id:uid(),name:i.value.trim(),r:0,v:0,m:0});openIds[s.id]=1}
+ else if(b.dataset.dels){if(!confirm('Delete this subject and its topics?'))return;S.subs=S.subs.filter(function(x){return x.id!==s.id})}
+ else if(b.id==='nsb'){var n=$('ns');if(!n.value.trim())return;S.subs.push({id:uid(),g:'Added by you',name:n.value.trim(),topics:[]})}
+ else return;
+ save();all()});
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){document.querySelectorAll('nav button').forEach(function(x){x.classList.toggle('on',x===b)});['syl','plan','foc','sta','pho'].forEach(function(t){$('p-'+t).classList.toggle('hide',t!==b.dataset.t)});if(b.dataset.t==='sta')renderStats();if(b.dataset.t==='plan')renderPlan()}});
+var left=25*60,tick=null,run=false,elapsed=0,away=0;
+function clock(){var m=Math.floor(left/60),s=left%60,t=('0'+m).slice(-2)+':'+('0'+s).slice(-2);$('clock').textContent=t;$('oclock').textContent=t}
+var WL=null;
+function showOv(){try{if(window.Android)Android.minimalOn()}catch(e){}$('osub').textContent=$('fsub').value;$('ov').classList.remove('hide');try{var r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(function(){})}catch(e){}try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(l){WL=l}).catch(function(){})}catch(e){}}
+function hideOv(){try{if(window.Android)Android.minimalOff()}catch(e){}$('ov').classList.add('hide');try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}try{if(WL){WL.release();WL=null}}catch(e){}}
+document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){if(run)return;left=+b.dataset.m*60;clock()}});
+function logIt(m){if(m<1)return;S.log.push({d:dk(),s:$('fsub').value||'General',m:m});save();renderStats()}
+function finish(){clearInterval(tick);run=false;hideOv();var m=Math.round(elapsed/60);logIt(m);$('go').textContent='Start focus';$('note').textContent='Saved '+m+' min. Distractions: '+away+'. Take a short break.';elapsed=0;away=0}
+$('go').onclick=function(){if(run){clearInterval(tick);run=false;$('go').textContent='Resume';hideOv();return}
+ run=true;$('go').textContent='Pause';if($('mini').checked)showOv();tick=setInterval(function(){left--;elapsed++;clock();if(left<=0){finish();left=25*60;clock()}},1000)};
+$('stop').onclick=function(){if(elapsed>0)finish();left=25*60;clock()};
+document.addEventListener('visibilitychange',function(){if(document.hidden&&run){away++;$('note').textContent='Distractions this session: '+away}});
+$('addm').onclick=function(){var v=parseInt($('mm').value,10);if(v>0){logIt(v);$('mm').value=''}};
+$('sed').onclick=function(){S.exam=$('ed').value;save();renderStats()};
+$('reset').onclick=function(){if(confirm('Replace your syllabus with the default list? Study time stays.')){S.subs=fresh();save();all()}};
+$('ostop').onclick=function(){$('stop').onclick()};all();clock();
+</script></body></html>
